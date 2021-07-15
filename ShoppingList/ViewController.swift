@@ -5,14 +5,20 @@ class ViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.allowsSelection = false
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addToShoppingList))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Submit",
+                                                           style: .plain,
+                                                           target: self,
+                                                           action: #selector(submitShoppingList))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
+                                                            target: self,
+                                                            action: #selector(addToShoppingList))
         title="My shopping list"
     }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return ShoppingList.count
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "List",for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "List", for: indexPath)
         cell.textLabel?.text = ShoppingList[indexPath.row]
         return cell
     }
@@ -31,6 +37,12 @@ class ViewController: UITableViewController {
         ShoppingList.insert(shoppingListItem, at: 0)
         let indexPath = IndexPath(row: 0, section: 0)
         tableView.insertRows(at: [indexPath], with: .automatic)
+    }
+    @objc func submitShoppingList() {
+        let list = ShoppingList.joined(separator: "\n")
+        let ac = UIActivityViewController(activityItems: [list], applicationActivities: [])
+        ac.popoverPresentationController?.barButtonItem = navigationItem.leftBarButtonItem
+        present(ac, animated: true)
     }
 }
 
